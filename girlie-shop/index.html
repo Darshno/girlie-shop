@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Girlie Shopping Website</title>
+
+    <!-- Google Material Icons -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    />
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ===== RESET ===== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        transition: 0.25s ease;
+      }
+
+      /* ===== THEME VARIABLES ===== */
+      :root {
+        --bg: #fff0f5;
+        --card: #ffffff;
+        --text: #3a3a3a;
+        --primary: #ff6f91;
+        --secondary: #ff3f6c;
+        --glass: rgba(255, 255, 255, 0.4);
+        --border: rgba(255, 255, 255, 0.3);
+        --shadow: rgba(255, 111, 145, 0.25);
+      }
+
+      .dark {
+        --bg: #0f0f14;
+        --card: #1a1a22;
+        --text: #f1f1f1;
+        --primary: #ff8fab;
+        --secondary: #ff4d6d;
+        --glass: rgba(30, 30, 40, 0.5);
+        --border: rgba(255, 255, 255, 0.1);
+        --shadow: rgba(0, 0, 0, 0.4);
+      }
+
+      /* ===== BODY ===== */
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      /* ===== HEADER ===== */
+      .headbar {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 12px 20px;
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 30px var(--shadow);
+        border-radius: 0 0 25px 25px;
+      }
+
+      .logo {
+        width: 50px;
+      }
+
+      .address {
+        font-size: 12px;
+      }
+
+      .nav-item {
+        color: var(--primary);
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .nav-item:hover {
+        color: var(--secondary);
+        transform: scale(1.05);
+      }
+
+      /* ===== SEARCH ===== */
+      .search-box {
+        display: flex;
+        align-items: center;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 5px 10px;
+        flex: 1;
+        max-width: 400px;
+      }
+
+      .search-box input {
+        border: none;
+        outline: none;
+        flex: 1;
+        background: transparent;
+        color: var(--text);
+      }
+
+      .search-box:focus-within {
+        box-shadow: 0 0 15px var(--primary);
+        transform: scale(1.02);
+      }
+
+      /* ===== CART ===== */
+      .cart-wrapper {
+        position: relative;
+      }
+
+      #cart-btn {
+        border: none;
+        background: var(--card);
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        color: var(--primary);
+        box-shadow: 0 4px 10px var(--shadow);
+      }
+
+      #cart-btn:hover {
+        transform: scale(1.1);
+      }
+
+      #cart-count {
+        background: var(--secondary);
+        color: white;
+        padding: 3px 8px;
+        border-radius: 20px;
+        margin-left: 5px;
+        animation: bounce 1.5s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-4px);
+        }
+      }
+
+      /* MINI CART */
+      .mini-cart {
+        position: absolute;
+        top: 45px;
+        right: 0;
+        width: 250px;
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border-radius: 15px;
+        border: 1px solid var(--border);
+        box-shadow: 0 12px 30px var(--shadow);
+        padding: 12px;
+        display: none;
+      }
+
+      .cart-wrapper:hover .mini-cart {
+        display: block;
+      }
+
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        font-size: 14px;
+      }
+
+      /* ===== LAYOUT ===== */
+      .layout {
+        display: flex;
+      }
+
+      #sidebar {
+        width: 220px;
+        padding: 20px;
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border-right: 1px solid var(--border);
+      }
+
+      /* SIDEBAR */
+      .sidebar-link {
+        display: block;
+        padding: 8px 10px;
+        border-radius: 12px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        color: var(--text);
+      }
+
+      .sidebar-link:hover {
+        background: linear-gradient(135deg, #ffd1dc, #f3e8ff);
+        color: var(--secondary);
+        transform: translateX(6px);
+      }
+
+      /* ===== FILTER BAR ===== */
+      .filter-bar {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .filter-bar select {
+        padding: 8px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        font-family: "Poppins";
+        cursor: pointer;
+      }
+
+      /* ===== PRODUCTS ===== */
+      main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      /* FLOATING GLASS CARD */
+      .product-card {
+        position: relative;
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 12px;
+        text-align: center;
+        box-shadow: 0 8px 30px var(--shadow);
+        animation: floatCard 3s ease-in-out infinite;
+      }
+
+      .product-card:hover {
+        transform: translateY(-12px) scale(1.04);
+        box-shadow: 0 20px 40px var(--shadow);
+      }
+
+      @keyframes floatCard {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+      }
+
+      .product-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px;
+      }
+
+      .product-name {
+        margin-top: 10px;
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .product-price {
+        color: var(--secondary);
+        font-weight: bold;
+        margin: 5px 0;
+      }
+
+      /* ADD TO CART */
+      .add-to-cart {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        cursor: pointer;
+      }
+
+      .add-to-cart:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px var(--secondary);
+      }
+
+      /* ===== WISHLIST HEART ===== */
+      .wishlist-btn {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        background: var(--glass);
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        backdrop-filter: blur(10px);
+      }
+
+      .wishlist-btn.active {
+        color: var(--secondary);
+        transform: scale(1.2);
+      }
+
+      /* ===== MOBILE ===== */
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+        }
+        #sidebar {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="headbar">
+      <img src="Untitled.png" class="logo" />
+
+      <div class="address">
+        <div>Delivery Address</div>
+        <strong>BTM Layout</strong>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search Girlie.in" />
+        <span class="material-symbols-outlined">search</span>
+      </div>
+
+      <div class="nav-item">Sign In</div>
+      <div class="nav-item">Orders</div>
+      <button id="theme-toggle">🌙</button>
+
+      <!-- CART -->
+      <div class="cart-wrapper">
+        <a href="cart.html">
+          <button id="cart-btn">🛒 Cart <span id="cart-count">0</span></button>
+        </a>
+
+        <div id="mini-cart" class="mini-cart">
+          <div id="mini-cart-items"></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside id="sidebar">
+        <h3>Categories</h3>
+
+        <a class="sidebar-link" data-filter="all">All</a>
+        <a class="sidebar-link" data-filter="dresses">Dresses</a>
+        <a class="sidebar-link" data-filter="accessories">Accessories</a>
+        <a class="sidebar-link" data-filter="footwear">Footwear</a>
+        <a class="sidebar-link" data-filter="cat">Cats</a>
+      </aside>
+
+      <main>
+        <!-- FILTER BAR -->
+        <div class="filter-bar">
+          <select id="price-filter">
+            <option value="all">All Prices</option>
+            <option value="0-100">Under ₹100</option>
+            <option value="100-500">₹100 - ₹500</option>
+            <option value="500-2000">₹500+</option>
+          </select>
+
+          <select id="rating-filter">
+            <option value="all">All Ratings</option>
+            <option value="4">⭐ 4+ Stars</option>
+            <option value="3">⭐ 3+ Stars</option>
+            <option value="2">⭐ 2+ Stars</option>
+          </select>
+        </div>
+
+        <div class="product-grid">
+          <div
+            class="product-card"
+            data-category="cat"
+            data-price="249"
+            data-rating="4"
+          >
+            <button class="wishlist-btn">♡</button>
+
+            <img src="panner.jpeg" />
+            <div class="product-name">Panner ⭐⭐⭐⭐</div>
+            <div class="product-price">₹249</div>
+            <button
+              class="add-to-cart"
+              data-id="1"
+              data-name="Panner"
+              data-price="249"
+            >
+              ADD TO CART
+            </button>
+          </div>
+
+          <div
+            class="product-card"
+            data-category="cat"
+            data-price="379"
+            data-rating="3"
+          >
+            <button class="wishlist-btn">♡</button>
+
+            <img src="soya.jpeg" />
+            <div class="product-name">Soya ⭐⭐⭐</div>
+            <div class="product-price">₹379</div>
+            <button
+              class="add-to-cart"
+              data-id="2"
+              data-name="Soya"
+              data-price="379"
+            >
+              ADD TO CART
+            </button>
+          </div>
+
+          <div
+            class="product-card"
+            data-category="electronics"
+            data-price="1299"
+            data-rating="5"
+          >
+            <button class="wishlist-btn">♡</button>
+
+            <img src="tele.jpeg" />
+            <div class="product-name">Phone ⭐⭐⭐⭐⭐</div>
+            <div class="product-price">₹1299</div>
+            <button
+              class="add-to-cart"
+              data-id="3"
+              data-name="Phone"
+              data-price="1299"
+            >
+              ADD TO CART
+            </button>
+          </div>
+
+          <div
+            class="product-card"
+            data-category="cat"
+            data-price="59"
+            data-rating="4"
+          >
+            <button class="wishlist-btn">♡</button>
+
+            <img src="sunny.jpg" />
+            <div class="product-name">🐱 Tummy Cat ⭐⭐⭐⭐</div>
+            <div class="product-price">₹59</div>
+            <button
+              class="add-to-cart"
+              data-id="4"
+              data-name="Tummy Cat"
+              data-price="59"
+            >
+              ADD TO CART
+            </button>
+          </div>
+
+          <div
+            class="product-card"
+            data-category="accessories"
+            data-price="99"
+            data-rating="2"
+          >
+            <button class="wishlist-btn">♡</button>
+
+            <img src="socks.jpeg" />
+            <div class="product-name">Socks ⭐⭐</div>
+            <div class="product-price">₹99</div>
+            <button
+              class="add-to-cart"
+              data-id="5"
+              data-name="Socks"
+              data-price="99"
+            >
+              ADD TO CART
+            </button>
+          </div>
+
+          <div
+            class="product-card"
+            data-category="food"
+            data-price="189"
+            data-rating="5"
+          >
+            <button class="wishlist-btn">♡</button>
+
+            <img src="strawberry.jpeg" alt="Strawberry" loading="lazy" />
+            <div class="product-name">Strawberry ⭐⭐⭐⭐⭐</div>
+            <div class="product-price">₹189</div>
+            <button
+              class="add-to-cart"
+              data-id="6"
+              data-name="Strawberry"
+              data-price="189"
+            >
+              ADD TO CART
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // ===== CART STATE =====
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      const miniCartItems = document.getElementById("mini-cart-items");
+      const cartCount = document.getElementById("cart-count");
+
+      // ===== UPDATE COUNT =====
+      function updateCartCount() {
+        let count = 0;
+        cart.forEach((item) => (count += item.quantity));
+        cartCount.innerText = count;
+      }
+
+      // ===== SAVE CART =====
+      function saveCart() {
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCount();
+        renderMiniCart();
+      }
+
+      // ===== ADD ITEM =====
+      function addToCart(id, name, price) {
+        const item = cart.find((p) => p.id === id);
+        if (item) item.quantity++;
+        else cart.push({ id, name, price, quantity: 1 });
+        saveCart();
+      }
+
+      // ===== RENDER MINI CART =====
+      function renderMiniCart() {
+        miniCartItems.innerHTML = "";
+
+        if (cart.length === 0) {
+          miniCartItems.innerHTML =
+            "<div class='cart-empty'>Cart is empty 💕</div>";
+          return;
+        }
+
+        cart.forEach((item) => {
+          miniCartItems.innerHTML += `
+<div class="cart-item">
+<span>${item.name} × ${item.quantity}</span>
+<span>₹${item.price * item.quantity}</span>
+</div>`;
+        });
+      }
+
+      // ===== ADD TO CART BUTTON =====
+      document.querySelectorAll(".add-to-cart").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          addToCart(
+            Number(btn.dataset.id),
+            btn.dataset.name,
+            Number(btn.dataset.price),
+          );
+        });
+      });
+      // ===== DARK LIGHT THEME =====
+      const toggleBtn = document.getElementById("theme-toggle");
+
+      // load saved theme
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+        toggleBtn.innerText = "☀️";
+      }
+
+      toggleBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark");
+
+        if (document.body.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark");
+          toggleBtn.innerText = "☀️";
+        } else {
+          localStorage.setItem("theme", "light");
+          toggleBtn.innerText = "🌙";
+        }
+      });
+
+      // =====================================================
+      // ===== FILTER SYSTEM (ONE CLEAN SYSTEM)
+      // =====================================================
+
+      const sidebarLinks = document.querySelectorAll(".sidebar-link");
+      const products = document.querySelectorAll(".product-card");
+      const priceFilter = document.getElementById("price-filter");
+      const ratingFilter = document.getElementById("rating-filter");
+      const searchInput = document.getElementById("searchInput");
+
+      let selectedCategory = "all";
+
+      function applyFilters() {
+        const priceValue = priceFilter.value;
+        const ratingValue = ratingFilter.value;
+        const searchValue = searchInput.value.toLowerCase();
+
+        products.forEach((product) => {
+          const category = product.dataset.category;
+          const price = Number(product.dataset.price);
+          const rating = Number(product.dataset.rating);
+          const name = product
+            .querySelector(".product-name")
+            .innerText.toLowerCase();
+
+          // CATEGORY
+          let categoryMatch =
+            selectedCategory === "all" || category === selectedCategory;
+
+          // PRICE
+          let priceMatch = true;
+          if (priceValue !== "all") {
+            const [min, max] = priceValue.split("-").map(Number);
+            priceMatch = max ? price >= min && price <= max : price >= min;
+          }
+
+          // RATING
+          let ratingMatch =
+            ratingValue === "all" || rating >= Number(ratingValue);
+
+          // SEARCH
+          let searchMatch = name.includes(searchValue);
+
+          // FINAL RESULT
+          product.style.display =
+            categoryMatch && priceMatch && ratingMatch && searchMatch
+              ? ""
+              : "none";
+        });
+      }
+      // ===== WISHLIST =====
+      let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+      document.querySelectorAll(".wishlist-btn").forEach((btn, index) => {
+        // restore state
+        if (wishlist.includes(index)) {
+          btn.classList.add("active");
+          btn.innerText = "❤️";
+        }
+
+        btn.addEventListener("click", () => {
+          btn.classList.toggle("active");
+
+          if (btn.classList.contains("active")) {
+            btn.innerText = "❤️";
+            wishlist.push(index);
+          } else {
+            btn.innerText = "♡";
+            wishlist = wishlist.filter((i) => i !== index);
+          }
+
+          localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        });
+      });
+
+      // ===== CATEGORY CLICK =====
+      sidebarLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          selectedCategory = link.dataset.filter;
+
+          // highlight active
+          sidebarLinks.forEach((l) => (l.style.background = ""));
+          link.style.background = "rgba(255,111,145,0.2)";
+
+          applyFilters();
+        });
+      });
+
+      // ===== DROPDOWNS =====
+      priceFilter.addEventListener("change", applyFilters);
+      ratingFilter.addEventListener("change", applyFilters);
+
+      // ===== SEARCH =====
+      searchInput.addEventListener("keyup", applyFilters);
+
+      // ===== INIT =====
+      updateCartCount();
+      renderMiniCart();
+    </script>
+  </body>
+</html>
