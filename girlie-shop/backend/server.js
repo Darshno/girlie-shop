@@ -9,11 +9,13 @@ app.use(express.json());
 
 // ===== DATABASE CONNECTION =====
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root123", // change this
-  database: "girlie_shop"
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT
 });
+
 
 db.connect(err => {
   if(err) console.log(err);
@@ -49,3 +51,4 @@ app.get("/orders", (req,res)=>{
 });
 
 app.listen(5000,()=>console.log("🚀 Server running on port 5000"));
+
