@@ -1,5 +1,4 @@
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
 
 const app = express();
@@ -8,6 +7,8 @@ app.use(cors());
 app.use(express.json());
 
 // ===== DATABASE CONNECTION =====
+const mysql = require("mysql2");
+
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
@@ -16,11 +17,11 @@ const db = mysql.createConnection({
   port: process.env.MYSQLPORT
 });
 
-
-db.connect(err => {
-  if(err) console.log(err);
-  else console.log("✅ MySQL Connected");
+db.connect(err=>{
+if(err) console.log("❌ MySQL Error:",err);
+else console.log("✅ MySQL Connected");
 });
+
 
 // ===== PLACE ORDER =====
 app.post("/place-order", (req, res) => {
@@ -51,4 +52,5 @@ app.get("/orders", (req,res)=>{
 });
 
 app.listen(5000,()=>console.log("🚀 Server running on port 5000"));
+
 
