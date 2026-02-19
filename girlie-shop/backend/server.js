@@ -33,7 +33,8 @@ const dbConfig = {
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT,
+  port: Number(process.env.MYSQLPORT),
+
   ssl: {
     rejectUnauthorized: false
   }
@@ -125,5 +126,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
