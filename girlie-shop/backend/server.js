@@ -7,72 +7,59 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* ===========================
-   CHECK ENV VARIABLES FIRST
-=========================== */
+/* ===============================
+   DATABASE CONNECTION (RAILWAY)
+=============================== */
 
-const requiredEnv = [
-  "MYSQLHOST",
-  "MYSQLUSER",
-  "MYSQLPASSWORD",
-  "MYSQLDATABASE",
-  "MYSQLPORT"
-];
+// Railway automatically provides DATABASE_URL
+// Example: mysql://user:password@host:port/database
 
-requiredEnv.forEach(key => {
-  if (!process.env[key]) {
-    console.error(`❌ Missing ENV variable: ${key}`);
-  }
-});
-
-/* ===========================
-   DATABASE CONNECTION
-=========================== */
-const dbConfig = {
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE,
-  port: Number(process.env.MYSQLPORT),
-
-  ssl: {
-    rejectUnauthorized: false
-  }
-};
-
-
-let db;
-
-/* retry connection automatically */
-function connectDatabase() {
-  console.log("🔌 Connecting to MySQL...");
-
-  db = mysql.createConnection(dbConfig);
-
-  db.connect(err => {
-    if (err) {
-      console.error("❌ MySQL Connection Failed:", err.message);
-      console.log("🔄 Retrying in 5 seconds...");
-      setTimeout(connectDatabase, 5000);
-    } else {
-      console.log("✅ MySQL Connected Successfully");
-    }
-  });
+if (!process.env.DATABASE_URL) {
+  console.error("❌ DATABASE_URL not found!");
+  process.exit(1);
 }
 
-connectDatabase();
+const db = mysql.createConnection(process.env.DATABASE_URL);
 
-/* ===========================
-   HEALTH CHECK
-=========================== */
-
-app.get("/", (req, res) => {
-  res.send("Backend running 🚀");
+// connect to database
+db.connect((err) => {
+  if (err) {
+    console.error("❌ MySQL Connection Failed:", err);
+    process.exit(1);
+  }
+  console.log("✅ MySQL Connected");
 });
 
-/* ===========================
+/* ===============================
+   CREATE TABLE IF NOT EXISTS
+=============================== */
+
+const createTableQuery = `
+CREATE TABLE IF NOT EXISTS orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  customer_name VARCHAR(100),
+  items JSON,
+  total_price DECIMAL(10,2),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+`;
+
+db.query(createTableQuery, (err) => {
+  if (err) console.error("❌ Table creation error:", err);
+  else console.log("✅ Orders table ready");
+});
+
+/* ===============================
+   HEALTH CHECK
+=============================== */
+
+app.get("/", (req, res) => {
+  res.send("🚀 Backend running");
+});
+
+/* ===============================
    PLACE ORDER
-=========================== */
+=============================== */
 
 app.post("/place-order", (req, res) => {
   const { customerName, items, total } = req.body;
@@ -94,7 +81,7 @@ app.post("/place-order", (req, res) => {
     [customerName, JSON.stringify(items), total],
     (err, result) => {
       if (err) {
-        console.error("❌ Order insert error:", err);
+        console.error("❌ Insert error:", err);
         return res.status(500).json({ error: "Database error" });
       }
 
@@ -103,29 +90,28 @@ app.post("/place-order", (req, res) => {
   );
 });
 
-/* ===========================
-   GET ORDERS (TEST)
-=========================== */
+/* ===============================
+   GET ALL ORDERS
+=============================== */
 
 app.get("/orders", (req, res) => {
   db.query("SELECT * FROM orders", (err, result) => {
     if (err) {
-      console.error("❌ Fetch orders error:", err);
+      console.error("❌ Fetch error:", err);
       return res.status(500).send(err);
     }
     res.json(result);
   });
 });
 
-/* ===========================
+/* ===============================
    START SERVER
-=========================== */
+=============================== */
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-
 
 
