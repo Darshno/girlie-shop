@@ -28,15 +28,17 @@ requiredEnv.forEach(key => {
 /* ===========================
    DATABASE CONNECTION
 =========================== */
-
 const dbConfig = {
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
   port: process.env.MYSQLPORT,
-  connectTimeout: 10000
+  ssl: {
+    rejectUnauthorized: false
+  }
 };
+
 
 let db;
 
@@ -123,4 +125,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
